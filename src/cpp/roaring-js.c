@@ -3,6 +3,8 @@
 #include "CRoaringUnityBuild/roaring.h"
 
 #define MAX_SERIALIZATION_NATIVE_MEMORY 0x00FFFFFF
+#define SERIALIZATION_ARRAY_UINT32 1
+#define SERIALIZATION_CONTAINER 2
 
 typedef struct roaring_bitmap_js_s {
   roaring_bitmap_t b;
@@ -54,13 +56,14 @@ roaring_bitmap_js_t * roaring_bitmap_create_js(uint32_t capacity) {
   if (!result)
     return NULL;
 
-  bool is_ok = ra_init_with_capacity(&result->b.high_low_container, capacity);
-  if (!is_ok) {
+  roaring_bitmap_t * b = roaring_bitmap_create_with_capacity(capacity);
+  if (b == NULL) {
     free(result);
     return NULL;
   }
 
-  result->b.copy_on_write = false;
+  result->b = *b;
+  free(b);
   result->tempUint32 = 0;
   result->tempPointer = NULL;
 
@@ -76,9 +79,12 @@ int roaring_bitmap_portable_deserialize_js(roaring_bitmap_t * bitmap, const char
   if (!bitmap || !size || !buf) {
     return 201;
   }
-  size_t bytesread;
-  if (!ra_portable_deserialize(&bitmap->high_low_container, buf, size, &bytesread))
+  roaring_bitmap_t * b = roaring_bitmap_portable_deserialize_safe(buf, size);
+  if (b == NULL)
     return 202;
+
+  *bitmap = *b;
+  free(b);
 
   return 0;
 }
