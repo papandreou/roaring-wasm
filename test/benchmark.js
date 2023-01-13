@@ -32,9 +32,22 @@ logging.time(`add ${src.length} values`, () => {
 
 let buf
 
-logging.time('serialize', () => {
-  buf = bitmap.serializeToRoaringUint8Array()
+logging.time('frozenSerialize', () => {
+  buf = bitmap.frozenSerializeToUint8Array()
   logging.log('*', buf.byteLength, 'bytes serialized')
+})
+
+logging.time('frozenDeserialize', () => {
+  RoaringBitmap32.frozenDeserialize(buf)
+})
+
+logging.time('serialize', () => {
+  buf = bitmap.serializeToUint8Array()
+  logging.log('*', buf.byteLength, 'bytes serialized')
+})
+
+logging.time('deserialize', () => {
+  RoaringBitmap32.deserialize(buf)
 })
 
 logging.time('dispose', () => {
