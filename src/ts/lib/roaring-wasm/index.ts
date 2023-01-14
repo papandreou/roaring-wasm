@@ -13,6 +13,7 @@ type RoaringWasm = {
   _malloc(size: number): number
   _roaring_aligned_malloc(alignment: number, size: number): number
   _free(pointer: number): void
+  _roaring_aligned_free(pointer: number): void
   _roaring_bitmap_create_js(initialCapacity: number): number
   _roaring_bitmap_free(roaring: number): void
   _roaring_bitmap_get_cardinality(roaring: number): number

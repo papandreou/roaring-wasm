@@ -2,6 +2,7 @@ const exportedFunctions = [
   '_malloc',
   '_roaring_aligned_malloc',
   '_free',
+  '_roaring_aligned_free',
 
   '_roaring_bitmap_free',
   '_roaring_bitmap_get_cardinality',
