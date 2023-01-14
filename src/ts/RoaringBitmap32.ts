@@ -659,7 +659,7 @@ class RoaringBitmap32 {
   public serializeToRoaringUint8Array(portable: boolean = false): RoaringUint8Array {
     const ptr = _getPtr(this)
     const size = this.getSerializationSizeInBytes(portable)
-    const buf = roaringWasm._malloc(size)
+    const buf = roaringWasm._roaring_aligned_malloc(32, size)
     if (portable) {
       _roaring_bitmap_portable_serialize(ptr, buf)
     } else {
