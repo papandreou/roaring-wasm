@@ -765,7 +765,7 @@ class RoaringBitmap32 {
   public frozenSerializeToUint8Array(): Uint8Array {
     const ptr = _getPtr(this)
     const size = _roaring_bitmap_frozen_size_in_bytes(ptr)
-    const buf = roaringWasm._malloc(size)
+    const buf = roaringWasm._roaring_aligned_malloc(32, size)
     _roaring_bitmap_frozen_serialize(ptr, buf)
     const roaringArray = new RoaringUint8Array(size, buf)
     try {
