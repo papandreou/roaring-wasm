@@ -11,6 +11,7 @@ type RoaringWasm = {
   readonly HEAPF64: Float64Array
 
   _malloc(size: number): number
+  _roaring_aligned_malloc(alignment: number, size: number): number
   _free(pointer: number): void
   _roaring_bitmap_create_js(initialCapacity: number): number
   _roaring_bitmap_free(roaring: number): void
