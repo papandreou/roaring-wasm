@@ -163,7 +163,7 @@ class RoaringUint8Array implements Iterable<number> {
 
     if (length > 0) {
       if (_pointer === undefined) {
-        _pointer = roaringWasm._malloc(length)
+        _pointer = roaringWasm._roaring_aligned_malloc(32, length)
       }
       if (!_pointer) {
         throw new Error(`RoaringUint8Array failed to allocate ${length} bytes`)
