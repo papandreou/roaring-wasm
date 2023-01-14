@@ -197,7 +197,7 @@ class RoaringUint32Array implements Iterable<number> {
     if (ptr) {
       ;(this as { byteOffset: number }).byteOffset = 0
       ;(this as { length: number }).length = 0
-      roaringWasm._free(ptr)
+      roaringWasm._roaring_aligned_free(ptr)
       return true
     }
     return false
