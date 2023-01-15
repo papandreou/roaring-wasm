@@ -745,11 +745,8 @@ class RoaringBitmap32 {
         throw new TypeError('deserialize expects an array of bytes')
       }
       const roaringArray = new RoaringUint8Array(buffer)
-      try {
-        this.frozenDeserialize(roaringArray)
-      } finally {
-        roaringArray.dispose()
-      }
+      this.frozenDeserialize(roaringArray)
+      // Do not dispose roaringArray as it's backing the frozen view
       return
     }
 
