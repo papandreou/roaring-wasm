@@ -1,6 +1,6 @@
 {
   "name": "roaring-wasm-papandreou",
-  "version": "0.1.18-patch2",
+  "version": "0.1.18-patch3",
   "description": "WebAssembly port of Roaring Bitmaps for NodeJS",
   "author": "Salvatore Previti",
   "license": "Apache-2.0",
