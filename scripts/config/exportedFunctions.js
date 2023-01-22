@@ -38,10 +38,12 @@ const exportedFunctions = [
   '_roaring_bitmap_portable_size_in_bytes',
   '_roaring_bitmap_portable_serialize',
   '_roaring_bitmap_portable_deserialize',
+  '_roaring_bitmap_portable_deserialize_frozen',
 
   '_roaring_bitmap_size_in_bytes',
   '_roaring_bitmap_deserialize',
-  '_roaring_bitmap_serialize'
+  '_roaring_bitmap_serialize',
+  '_roaring_bitmap_deserialize_frozen_js'
 ]
 
 module.exports = exportedFunctions

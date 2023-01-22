@@ -47,10 +47,12 @@ type RoaringWasm = {
   _roaring_bitmap_portable_size_in_bytes(roaring: number): number
   _roaring_bitmap_portable_serialize(roaring: number, bufPtr: number): number
   _roaring_bitmap_portable_deserialize(bufPtr: number): number
+  _roaring_bitmap_portable_deserialize_frozen(bufPtr: number): number
 
   _roaring_bitmap_size_in_bytes(roaring: number): number
   _roaring_bitmap_serialize(roaring: number, bufPtr: number): number
-  _roaring_bitmap_deserialize(bufPtr: number, length: number): number
+  _roaring_bitmap_deserialize(bufPtr: number): number
+  _roaring_bitmap_deserialize_frozen_js(bufPtr: number): number
 }
 
 /**

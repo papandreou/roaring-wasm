@@ -227,6 +227,7 @@ the RoaringBitmap32 when not needed anymore to release WASM memory.
 -   `buffer` **([RoaringUint8Array](#roaringuint8array) \| [Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | Iterable&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)>)** The buffer to deserialize
 -   `portable` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If true, deserialization is compatible with the Java and Go versions of the library.
     If false, deserialization is compatible with the C version of the library. Default is false. (optional, default `false`)
+-   `frozen`   (optional, default `false`)
 
 Returns **[RoaringBitmap32](#roaringbitmap32)** The reulting bitmap. Remember to dispose the instance when finished using it.
 
@@ -240,6 +241,7 @@ Throws an error if deserialization failed.
 -   `buffer` **([RoaringUint8Array](#roaringuint8array) \| [Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | Iterable&lt;[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)>)** 
 -   `portable` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** If true, deserialization is compatible with the Java and Go versions of the library.
     If false, deserialization is compatible with the C version of the library. Default is false. (optional, default `false`)
+-   `frozen`   (optional, default `false`)
 
 Returns **void** 
 

@@ -39,3 +39,12 @@ double roaring_bitmap_select_js(const roaring_bitmap_t * bm, uint32_t rank) {
   uint32_t element;
   return roaring_bitmap_select(bm, rank, &element) ? element : NAN;
 }
+
+roaring_bitmap_t * roaring_bitmap_deserialize_frozen_js(const char* buf) {
+  if (buf[0] == 2) {
+    // portable format
+    return roaring_bitmap_portable_deserialize_frozen(buf+1);
+  } else {
+    return roaring_bitmap_deserialize(buf);
+  }
+}

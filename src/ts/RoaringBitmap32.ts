@@ -38,10 +38,12 @@ const {
   _roaring_bitmap_portable_size_in_bytes,
   _roaring_bitmap_portable_serialize,
   _roaring_bitmap_portable_deserialize,
+  _roaring_bitmap_portable_deserialize_frozen,
 
   _roaring_bitmap_size_in_bytes,
   _roaring_bitmap_deserialize,
-  _roaring_bitmap_serialize
+  _roaring_bitmap_serialize,
+  _roaring_bitmap_deserialize_frozen_js
 } = roaringWasm
 
 /**
@@ -91,10 +93,10 @@ class RoaringBitmap32 {
    * @returns {RoaringBitmap32} The reulting bitmap. Remember to dispose the instance when finished using it.
    * @memberof RoaringBitmap32
    */
-  public static deserialize(buffer: RoaringUint8Array | Uint8Array | Iterable<number>, portable: boolean = false): RoaringBitmap32 {
+  public static deserialize(buffer: RoaringUint8Array | Uint8Array | Iterable<number>, portable: boolean = false, frozen: boolean = false): RoaringBitmap32 {
     const bitmap = new RoaringBitmap32()
     try {
-      bitmap.deserialize(buffer, portable)
+      bitmap.deserialize(buffer, portable, frozen)
     } catch (error) {
       bitmap.dispose()
       throw error
@@ -699,7 +701,7 @@ class RoaringBitmap32 {
    * @returns {void}
    * @memberof RoaringBitmap32
    */
-  public deserialize(buffer: RoaringUint8Array | Uint8Array | Iterable<number>, portable: boolean = false): void {
+  public deserialize(buffer: RoaringUint8Array | Uint8Array | Iterable<number>, portable: boolean = false, frozen: boolean = false): void {
     if (!(buffer instanceof RoaringUint8Array)) {
       if (typeof buffer === 'number') {
         throw new TypeError('deserialize expects an array of bytes')
@@ -713,9 +715,20 @@ class RoaringBitmap32 {
       return
     }
 
-    const ptr = portable
-      ? _roaring_bitmap_portable_deserialize(buffer.byteOffset)
-      : _roaring_bitmap_deserialize(buffer.byteOffset, buffer.length)
+    let ptr;
+    if (portable) {
+      if (frozen) {
+        ptr = _roaring_bitmap_portable_deserialize_frozen(buffer.byteOffset);
+      } else {
+        ptr = _roaring_bitmap_portable_deserialize(buffer.byteOffset);
+      }
+    } else {
+      if (frozen) {
+        ptr = _roaring_bitmap_deserialize_frozen_js(buffer.byteOffset);
+      } else {
+        ptr = _roaring_bitmap_deserialize(buffer.byteOffset);
+      }
+    }
 
     if (ptr === null) {
       throw new Error(`RoaringBitmap32 deserialization failed`)
