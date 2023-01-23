@@ -163,7 +163,7 @@ class RoaringUint32Array implements Iterable<number> {
 
     if (length > 0) {
       if (_pointer === undefined) {
-        _pointer = roaringWasm._roaring_aligned_malloc(32, length * 4)
+        _pointer = roaringWasm._malloc(length * 4)
       }
       if (!_pointer) {
         throw new Error(`RoaringUint32Array failed to allocate ${length * 4} bytes`)
@@ -197,7 +197,7 @@ class RoaringUint32Array implements Iterable<number> {
     if (ptr) {
       ;(this as { byteOffset: number }).byteOffset = 0
       ;(this as { length: number }).length = 0
-      roaringWasm._roaring_aligned_free(ptr)
+      roaringWasm._free(ptr)
       return true
     }
     return false

@@ -36,16 +36,12 @@ const {
   _roaring_bitmap_remove_checked_js,
 
   _roaring_bitmap_portable_size_in_bytes,
-  _roaring_bitmap_portable_serialize,
-  _roaring_bitmap_portable_deserialize,
+  _roaring_bitmap_portable_serialize_js,
+  _roaring_bitmap_portable_deserialize_js,
 
   _roaring_bitmap_native_size_in_bytes_js,
   _roaring_bitmap_native_deserialize_js,
-  _roaring_bitmap_native_serialize_js,
-
-  _roaring_bitmap_frozen_size_in_bytes,
-  _roaring_bitmap_frozen_serialize,
-  _roaring_bitmap_frozen_view
+  _roaring_bitmap_native_serialize_js
 } = roaringWasm
 
 /**
@@ -99,17 +95,6 @@ class RoaringBitmap32 {
     const bitmap = new RoaringBitmap32()
     try {
       bitmap.deserialize(buffer, portable)
-    } catch (error) {
-      bitmap.dispose()
-      throw error
-    }
-    return bitmap
-  }
-
-  public static frozenDeserialize(buffer: RoaringUint8Array | Uint8Array | Iterable<number>): RoaringBitmap32 {
-    const bitmap = new RoaringBitmap32()
-    try {
-      bitmap.frozenDeserialize(buffer)
     } catch (error) {
       bitmap.dispose()
       throw error
@@ -658,14 +643,12 @@ class RoaringBitmap32 {
    */
   public serializeToRoaringUint8Array(portable: boolean = false): RoaringUint8Array {
     const ptr = _getPtr(this)
-    const size = this.getSerializationSizeInBytes(portable)
-    const buf = roaringWasm._roaring_aligned_malloc(32, size)
-    if (portable) {
-      _roaring_bitmap_portable_serialize(ptr, buf)
-    } else {
-      _roaring_bitmap_native_serialize_js(ptr, buf)
+    const code = portable ? _roaring_bitmap_portable_serialize_js(ptr) : _roaring_bitmap_native_serialize_js(ptr)
+    if (code !== 0) {
+      throw new Error(`RoaringBitmap32 serialization failed, code:${code}`)
     }
-    return new RoaringUint8Array(size, buf)
+    const tempPtr = (ptr + roaringWasm.roaring_bitmap_temp_offset) / 4
+    return new RoaringUint8Array(roaringWasm.HEAPU32[tempPtr], roaringWasm.HEAPU32[tempPtr + 1])
   }
 
   /**
@@ -719,6 +702,7 @@ class RoaringBitmap32 {
       if (typeof buffer === 'number') {
         throw new TypeError('deserialize expects an array of bytes')
       }
+      _getPtr(this)
       const roaringArray = new RoaringUint8Array(buffer)
       try {
         this.deserialize(roaringArray)
@@ -728,47 +712,12 @@ class RoaringBitmap32 {
       return
     }
 
-    const ptr = portable
-      ? _roaring_bitmap_portable_deserialize(buffer.byteOffset)
-      : _roaring_bitmap_native_deserialize_js(buffer.byteOffset, buffer.length)
+    const code = portable
+      ? _roaring_bitmap_portable_deserialize_js(_getPtr(this), buffer.byteOffset, buffer.length)
+      : _roaring_bitmap_native_deserialize_js(_getPtr(this), buffer.byteOffset, buffer.length)
 
-    if (ptr === null) {
-      throw new Error(`RoaringBitmap32 deserialization failed`)
-    }
-
-    this._ptr = ptr;
-  }
-
-  public frozenDeserialize(buffer: RoaringUint8Array | Uint8Array | Iterable<number>): void {
-    if (!(buffer instanceof RoaringUint8Array)) {
-      if (typeof buffer === 'number') {
-        throw new TypeError('deserialize expects an array of bytes')
-      }
-      const roaringArray = new RoaringUint8Array(buffer)
-      this.frozenDeserialize(roaringArray)
-      // Do not dispose roaringArray as it's backing the frozen view
-      return
-    }
-
-    const ptr = _roaring_bitmap_frozen_view(buffer.byteOffset, buffer.length)
-
-    if (ptr === null) {
-      throw new Error(`RoaringBitmap32 deserialization failed`)
-    }
-
-    this._ptr = ptr;
-  }
-
-  public frozenSerializeToUint8Array(): Uint8Array {
-    const ptr = _getPtr(this)
-    const size = _roaring_bitmap_frozen_size_in_bytes(ptr)
-    const buf = roaringWasm._roaring_aligned_malloc(32, size)
-    _roaring_bitmap_frozen_serialize(ptr, buf)
-    const roaringArray = new RoaringUint8Array(size, buf)
-    try {
-      return roaringArray.toTypedArray()
-    } finally {
-      roaringArray.dispose()
+    if (code !== 0) {
+      throw new Error(`RoaringBitmap32 deserialization failed, code:${code}`)
     }
   }
 }
