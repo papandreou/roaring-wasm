@@ -1,6 +1,6 @@
 import IDisposable = require('idisposable')
-import RoaringBitmap32 = require('roaring-wasm/RoaringBitmap32')
-import RoaringUint32Array = require('roaring-wasm/RoaringUint32Array')
+import RoaringBitmap32 = require('roaring-wasm-papandreou/RoaringBitmap32')
+import RoaringUint32Array = require('roaring-wasm-papandreou/RoaringUint32Array')
 
 describe('RoaringBitmap32', () => {
   describe('addChecked', () => {

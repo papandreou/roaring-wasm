@@ -5,8 +5,8 @@
     "declaration": false,
     "noEmit": true,
     "paths": {
-      "roaring-wasm": ["../src/ts"],
-      "roaring-wasm*": ["../src/ts*"]
+      "roaring-wasm-papandreou": ["../src/ts"],
+      "roaring-wasm-papandreou*": ["../src/ts*"]
     },
     "rootDir": "../"
   },

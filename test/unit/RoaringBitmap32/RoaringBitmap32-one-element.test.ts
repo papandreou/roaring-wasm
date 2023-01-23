@@ -1,5 +1,5 @@
 import IDisposable = require('idisposable')
-import RoaringBitmap32 = require('roaring-wasm/RoaringBitmap32')
+import RoaringBitmap32 = require('roaring-wasm-papandreou/RoaringBitmap32')
 
 describe('RoaringBitmap32 one element', () => {
   describe('read', () => {
