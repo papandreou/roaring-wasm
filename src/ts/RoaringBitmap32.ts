@@ -57,6 +57,7 @@ const {
  */
 class RoaringBitmap32 {
   private _ptr: number | undefined
+  private _frozenBuf: number | undefined
 
   /**
    * Creates a new roaring bitmap adding the specified values.
@@ -191,6 +192,12 @@ class RoaringBitmap32 {
     if (ptr) {
       _roaring_bitmap_free(ptr)
       this._ptr = undefined
+
+      if(this._frozenBuf) {
+        roaringWasm._free(this._frozenBuf);
+        this._frozenBuf = undefined;
+      }
+
       return true
     }
     return false
@@ -716,15 +723,17 @@ class RoaringBitmap32 {
     }
 
     let ptr;
-    if (portable) {
-      if (frozen) {
+    if (frozen) {
+      if (portable) {
         ptr = _roaring_bitmap_portable_deserialize_frozen(buffer.byteOffset);
       } else {
-        ptr = _roaring_bitmap_portable_deserialize(buffer.byteOffset);
-      }
-    } else {
-      if (frozen) {
         ptr = _roaring_bitmap_deserialize_frozen_js(buffer.byteOffset);
+      }
+
+      this._frozenBuf = buffer.byteOffset;
+    } else {
+      if (portable) {
+        ptr = _roaring_bitmap_portable_deserialize(buffer.byteOffset);
       } else {
         ptr = _roaring_bitmap_deserialize(buffer.byteOffset);
       }
