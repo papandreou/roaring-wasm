@@ -704,6 +704,7 @@ class RoaringBitmap32 {
    *
    * @param {(RoaringUint8Array | Uint8Array | Iterable<number>)} buffer
    * @param {boolean} [portable=false] If true, deserialization is compatible with the Java and Go versions of the library.
+   * @param {boolean} [frozen=false] If true, deserialization is compatible with the Java and Go versions of the library.
    * If false, deserialization is compatible with the C version of the library. Default is false.
    * @returns {void}
    * @memberof RoaringBitmap32
@@ -715,9 +716,11 @@ class RoaringBitmap32 {
       }
       const roaringArray = new RoaringUint8Array(buffer)
       try {
-        this.deserialize(roaringArray)
+        this.deserialize(roaringArray, portable, frozen)
       } finally {
-        roaringArray.dispose()
+        if(!frozen) {
+          roaringArray.dispose()
+        }
       }
       return
     }
